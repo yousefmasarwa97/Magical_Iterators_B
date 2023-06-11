@@ -34,19 +34,14 @@ namespace ariel {
 
     int MagicalContainer::MagicalContainer::operator[](size_t index)const{
         int res;
-        if (index>magical_vector. size()) {
+        if (index>=magical_vector. size()) {
             throw std::runtime_error("index out of bound");
         }
 
-        // for (auto it = magical_vector.begin(); it != magical_vector.end(); ++it){
-        //     if(*it== index){
-        //         res=index;
-        //     }
-        // }
-        return magical_vector.at(index);
         
-         
+        return magical_vector.at(index);     
     }
+
     vector<int> MagicalContainer::getElements() const
     {
         return magical_vector;
@@ -62,6 +57,7 @@ namespace ariel {
                 prime_vector.push_back(&magical_vector.at(i));
             }  
         }
+        
             
     }
 
@@ -71,7 +67,6 @@ namespace ariel {
             if (*it==element) {
                 magical_vector.erase(it);
                 found=true;
-                // break;
             }
         }
         for(auto it=prime_vector.begin();it!=prime_vector.end();++it){
@@ -86,9 +81,7 @@ namespace ariel {
 
     }
 
-    // void MagicalContainer::PrimeIterator::add(int element){
-    //     container.addElement(element);
-    // }
+    
 
     size_t MagicalContainer::size()const{
         return this->magical_vector.size();
@@ -121,11 +114,6 @@ namespace ariel {
     }
 
     bool MagicalContainer::AscendingIterator::operator!=(const AscendingIterator &other) const{
-        // if (this->container.magical_vector.begin()==other.container.magical_vector.begin() && 
-        // this->position==other.position) {
-        //     return false;
-        // }
-        // return true;
         return !(*this==other);
     }
 
@@ -142,9 +130,7 @@ namespace ariel {
     }
 
     int MagicalContainer::AscendingIterator::operator*() const{
-        return container.magical_vector.at(position);
-        //return container[position];
-        //return **this;
+        return container[position];
     }
 
     MagicalContainer::AscendingIterator & MagicalContainer::AscendingIterator::operator++(){
@@ -173,12 +159,13 @@ namespace ariel {
     }
     MagicalContainer::SideCrossIterator::SideCrossIterator(MagicalContainer& magicalContainer)
     :container(magicalContainer),position(0) {
+        reverse_position=magicalContainer.size()-1;
      
     }
 
     MagicalContainer::SideCrossIterator::SideCrossIterator(MagicalContainer& magicalContainer,size_t position)
     :container(magicalContainer),position(position) {
-     
+        reverse_position=magicalContainer.size()-1;
     }
 
     
@@ -201,40 +188,45 @@ namespace ariel {
    
     bool MagicalContainer::SideCrossIterator::operator!=(const SideCrossIterator & other)const{
         return !(*this==other);
-
     }
+
     bool MagicalContainer::SideCrossIterator::operator==(const SideCrossIterator & other)const{
-         return &container == &other.container && position == other.position;
-
+        return &container == &other.container && position == other.position;
     }
+    
     bool MagicalContainer::SideCrossIterator::operator>(const SideCrossIterator & other)const{
         return position>other.position;
-
     }
+
     bool MagicalContainer::SideCrossIterator::operator<(const SideCrossIterator & other)const{
         return position<other.position;
     }
 
     int MagicalContainer::SideCrossIterator::operator*() const {
         if (position%2==0) {
-            return container.magical_vector.at(position/2);
+            return container[position/2];
         
         }
-        return container.magical_vector.at(container.size()-1-((position-1)/2));
-        //return container.magical_vector.at(position);
+        return container[reverse_position];
     }
 
     MagicalContainer::SideCrossIterator & MagicalContainer::SideCrossIterator::operator++(){
         if (*this==end() || position>=container.size()) {
             throw std::runtime_error("index out of bound");
         }
+        if (position%2!=0) {
+            reverse_position--;
+        
+        }
         position++;
         return *this;
     }
+
     MagicalContainer::SideCrossIterator MagicalContainer::SideCrossIterator::begin(){
         return SideCrossIterator(container,0);
 
     }
+
     MagicalContainer::SideCrossIterator MagicalContainer::SideCrossIterator::end(){
         return SideCrossIterator(container,container.size());
 
@@ -292,8 +284,6 @@ namespace ariel {
     }
 
     int MagicalContainer::PrimeIterator::operator*() const {
-       //return *this[position];
-       //return **this;
        return *container.prime_vector.at(position);
     }
 

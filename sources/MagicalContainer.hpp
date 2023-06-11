@@ -64,6 +64,7 @@ namespace ariel {
             
             MagicalContainer &container;
             size_t position;
+            size_t reverse_position;
 
 
             public:
